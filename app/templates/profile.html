@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %} Profile {% endblock %}
+
+{% block header %}
+    <h1 class="text-dark fw-lighter fs-1 mt-4"><strong>@</strong>{{ username }}</h1>
+
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex flex-wrap-reverse">
+
+        {% for art in arts %}
+                {% if art.user_id == current_user.id %}
+                    <div class="m-3 card mb-3 border border-white mt-4" style="max-width: 340px;">
+                        <div class="row g-0">
+                                <img class="card-img-top rounded-3" style="width: 300px" src="{{ url_for('static', filename='/uploads/{}'.format(art.image)) }}" alt="random">
+                        </div>
+                        <div class="row ">
+                                <div class="card-body lh-1">
+                                    <h6 class="card-subtitle text-muted">{{ art.date_created }}</h6>
+                                    <h5 class="card-title">{{ art.title }}</h5>
+
+                                    <p class="card-text">Size: {{ art.width }} X {{ art.height }}</p>
+                                    <p class="card-text"><em>{{ art.description }}</em></p>
+                                    <p class="card-text">Price: ${{ art.price }}</p>
+                                        <button type="button" class="btn btn-outline-danger text-danger" data-bs-toggle="modal" data-bs-target="#deleteArtModal-{{ art.art_id }}">Delete</button>
+                                        <a href="{{ url_for('edit_art', art_id=art.art_id) }}" class="btn btn-border-secondary text-secondary">Edit</a>
+
+                                </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="deleteArtModal-{{ art.art_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Delete {{ art.title }}?</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                Are you sure you want to delete {{ art.title }}? This action cannot be undone.
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <a href="{{ url_for('delete_art', art_id=art.art_id) }}" class="btn btn-white btn-outline-danger">Delete Post</a>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    {% if art.user_id == profile.id %}
+                        <div class="m-3 card mb-3 border border-white mt-4" style="max-width: 340px;">
+                            <div class="row g-0">
+                                    <img class="card-img-top rounded-3" style="width: 300px" src="{{ url_for('static', filename='/uploads/{}'.format(art.image)) }}" alt="random">
+                            </div>
+                            <div class="row ">
+                                <div class="card-body lh-1">
+                                    <h6 class="card-subtitle text-muted">{{ art.date_created }}</h6>
+                                    <h5 class="card-title">{{ art.title }}</h5>
+
+                                    <p class="card-text">Size: {{ art.width }} X {{ art.height }}</p>
+                                    <p class="card-text"><em>{{ art.description }}</em></p>
+                                    <p class="card-text">Price: ${{ art.price }}</p>
+
+                                        {% if art.user_id != current_user.id %}
+                                            <a href="" class="btn btn-outline-secondary text-secondary p-1 fs-6 pe-3 ps-3">Buy</a>
+                                        {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,32 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Upload{% endblock %}
+
+{% block header %}
+    <h1 class="text-dark fw-light fs-1">Upload Your Artwork</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-7">
+            <div class="card mb-5 border border-white ps-5">
+                <div class="card-body">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {{ form.csrf_token }}
+                        <div class="row ms-1">
+                            {{ form.image.label (class="form-label ms-1", for="formFile") }}
+                            <p class="text-secondary fw-light"><em>We can only accept JPG and PNG</em></p>
+
+                            {{ form.image(class="form-control border border-secondary rounded-4", id="formFile", accept="JPG, PNG")}}
+
+                        </div>
+                        <div class="row justify-content-center">
+                            {{ form.submit(class="btn btn-dark w-50 m-3 mt-5 rounded-4 p-3 ") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

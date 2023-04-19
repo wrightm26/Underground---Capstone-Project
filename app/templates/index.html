@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block header %}
+    <h1 class="text-dark fs-3 p-2 fw-light bg-white">Bringing Beautiful Artwork to Light</h1>
+
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex flex-wrap-reverse  justify-content-center">
+        {% for art in arts %}
+
+
+                    <div class="m-3 card mb-3 border border-white mt-4" style="max-width: 340px;">
+                        <div class="row g-0">
+                                <img class="card-img-top rounded-3" style="width: 300px" src="{{ url_for('static', filename='/uploads/{}'.format(art.image)) }}" alt="random">
+                        </div>
+                        <div class="row ">
+                                <div class="card-body lh-1">
+                                    <h6 class="card-subtitle text-muted">{{ art.date_created }}</h6>
+                                    <h5 class="card-title">{{ art.title }}</h5>
+
+                                    <p class="card-text">Size: {{ art.width }} X {{ art.height }}</p>
+                                    <p class="card-text"><em>{{ art.description }}</em></p>
+                                    <p class="card-text">Price: ${{ art.price }}</p>
+
+                                        {% if art.user_id != current_user.id %}
+                                            <a href="" class="btn btn-outline-secondary text-secondary p-1 fs-6 pe-3 ps-3">Buy</a>
+                                        {% endif %}
+
+                                </div>
+
+                        </div>
+                    </div>
+
+        {% endfor %}
+    </div>
+{% endblock %}
