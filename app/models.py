@@ -17,6 +17,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(75), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    artwork = db.relationship('Art', backref='artist')
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

@@ -33,6 +33,3 @@ class AddArtForm(FlaskForm):
 class UploadForm(FlaskForm):
     image = FileField('Image', validators=[InputRequired()])
     submit = SubmitField('Add Artwork')
-
-class CopyPasteForm(FlaskForm):
-    submit = SubmitField('Share Portfolio')

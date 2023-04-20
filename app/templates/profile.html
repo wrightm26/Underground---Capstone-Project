@@ -8,67 +8,98 @@
 {% endblock %}
 
 {% block content %}
-    <div class="d-flex flex-wrap-reverse">
+    <div class="d-flex flex-wrap">
 
         {% for art in arts %}
                 {% if art.user_id == current_user.id %}
-                    <div class="m-3 card mb-3 border border-white mt-4" style="max-width: 340px;">
-                        <div class="row g-0">
-                                <img class="card-img-top rounded-3" style="width: 300px" src="{{ url_for('static', filename='/uploads/{}'.format(art.image)) }}" alt="random">
-                        </div>
-                        <div class="row ">
-                                <div class="card-body lh-1">
-                                    <h6 class="card-subtitle text-muted">{{ art.date_created }}</h6>
-                                    <h5 class="card-title">{{ art.title }}</h5>
+                    <div class="m-3 card mb-3 border border-white mt-4" style="max-width: 240px;">
 
-                                    <p class="card-text">Size: {{ art.width }} X {{ art.height }}</p>
-                                    <p class="card-text"><em>{{ art.description }}</em></p>
-                                    <p class="card-text">Price: ${{ art.price }}</p>
-                                        <button type="button" class="btn btn-outline-danger text-danger" data-bs-toggle="modal" data-bs-target="#deleteArtModal-{{ art.art_id }}">Delete</button>
-                                        <a href="{{ url_for('edit_art', art_id=art.art_id) }}" class="btn btn-border-secondary text-secondary">Edit</a>
+                        <div class="row ">
+                                <div class="card-body">
+                                    <a href="/profile/{{ art.artist.username }}" class=" p-0 card-text  fs-5 fw-light test-dark btn btn-white btn-outline-white ">@{{ art.artist.username }}</a>
+
+                                    <span><h5 class="card-title">{{ art.title }}</h5></span>
+                                    <span><h6 class="card-text text-muted mt-3 fw-light">{{ art.artist.date_created }}</h6></span>
+                                    <span class="card-text"><em>{{ art.description }}</em></span><br>
+                                    <span class="card-text">Size: <em>{{ art.width }} X {{ art.height }}</em></span><br>
+                                    <span class="card-text">Price: <em>${{ art.price }}</em></span><br>
+                                        <button type="button" class="btn btn-outline-white text-danger text-center" data-bs-toggle="modal" data-bs-target="#deleteArtModal-{{ art.art_id }}">Delete</button>
+                                        <a href="{{ url_for('edit_art', art_id=art.art_id) }}" class="btn btn-border-secondary text-secondary text-center">Edit</a>
 
                                 </div>
                         </div>
+                        <div class="row g-0">
+                                <img class="card-img-top rounded-3" style="width: 240px; max-height: 270px;" src="{{ url_for('static', filename='/uploads/{}'.format(art.image)) }}" alt="random">
+                        </div>
                     </div>
-                    <div class="modal fade" id="deleteArtModal-{{ art.art_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+                    <div class="modal fade " id="deleteArtModal-{{ art.art_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Delete {{ art.title }}?</h1>
+                            <div class="modal-content ">
+                                <div class="modal-header ">
+                                    <h1 class="modal-title fs-6 fw-lighter" id="exampleModalLabel">Are you sure you would like to delete "{{ art.title }}"?</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <div class="modal-body">
-                                Are you sure you want to delete {{ art.title }}? This action cannot be undone.
+                                <div class="modal-body ">
+                                    <img class="card-img-top rounded-3 " style="width: 350px; max-height: 190px;" src="{{ url_for('static', filename='/uploads/{}'.format(art.image)) }}" alt="random">
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <a href="{{ url_for('delete_art', art_id=art.art_id) }}" class="btn btn-white btn-outline-danger">Delete Post</a>
+                                    <button type="button" class=" btn-outline-white btn btn-white text-secondary" data-bs-dismiss="modal">Close</button>
+                                    <a href="{{ url_for('delete_art', art_id=art.art_id) }}" class="btn btn-white btn-outline-white link-danger">Delete</a>
 
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="modal fade"  tabindex="-1" id="showArtModal-{{ art.art_id }}">
+                        <div class="modal-dialog">
+                          <div class="modal-content" style="width: 540px; max-height: 460px;">
+                            <div class="modal-body">
+                                <img class="card-img-top rounded-3 " style="width: 500px; max-height: 350px;" src="{{ url_for('static', filename='/uploads/{}'.format(art.image)) }}" alt="random" >
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class=" btn-outline-white btn btn-white text-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                 {% else %}
                     {% if art.user_id == profile.id %}
-                        <div class="m-3 card mb-3 border border-white mt-4" style="max-width: 340px;">
-                            <div class="row g-0">
-                                    <img class="card-img-top rounded-3" style="width: 300px" src="{{ url_for('static', filename='/uploads/{}'.format(art.image)) }}" alt="random">
-                            </div>
+                        <div class="m-3 card mb-3 border border-white mt-4" style="max-width: 240px;">
                             <div class="row ">
-                                <div class="card-body lh-1">
-                                    <h6 class="card-subtitle text-muted">{{ art.date_created }}</h6>
-                                    <h5 class="card-title">{{ art.title }}</h5>
+                                <div class="card-body ">
+                                    <a href="/profile/{{ art.artist.username }}" class=" p-0 card-text  fs-5 fw-light test-dark btn btn-white btn-outline-white ">@{{ art.artist.username }}</a>
 
-                                    <p class="card-text">Size: {{ art.width }} X {{ art.height }}</p>
-                                    <p class="card-text"><em>{{ art.description }}</em></p>
-                                    <p class="card-text">Price: ${{ art.price }}</p>
-
-                                        {% if art.user_id != current_user.id %}
-                                            <a href="" class="btn btn-outline-secondary text-secondary p-1 fs-6 pe-3 ps-3">Buy</a>
-                                        {% endif %}
+                                    <span><h5 class="card-title">{{ art.title }}</h5></span>
+                                    <span><h6 class="card-text text-muted mt-3 fw-light">{{ art.artist.date_created }}</h6></span>
+                                    <span class="card-text"><em>{{ art.description }}</em></span><br>
+                                    <span class="card-text">Size: <em>{{ art.width }} X {{ art.height }}</em></span><br>
+                                    <span class="card-text">Price: <em>${{ art.price }}</em></span>
                                 </div>
                             </div>
+                            <div class="row g-0">
+                                    <img class="card-img-top rounded-top" style="width: 240px; max-height: 190px;" src="{{ url_for('static', filename='/uploads/{}'.format(art.image)) }}" type="button"  data-bs-toggle="modal" data-bs-target="#showArtModal-{{ art.art_id }}"  alt="random">
+                            </div>
+                            <div>
+                                {% if art.user_id != current_user.id %}
+                                    <a href="/thankyou" class=" w-100 btn btn btn-success text-white p-1 fs-6 pe-3 ps-3 rounded-bottom"><strong>BUY NOW</strong></a>
+
+                                {% endif %}
+                            </div>
                         </div>
+
+                        <div class="modal fade"  tabindex="-1" id="showArtModal-{{ art.art_id }}">
+                            <div class="modal-dialog">
+                              <div class="modal-content" style="width: 540px; max-height: 460px;">
+                                <div class="modal-body">
+                                    <img class="card-img-top rounded-3 " style="width: 500px; max-height: 350px;" src="{{ url_for('static', filename='/uploads/{}'.format(art.image)) }}" alt="random">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class=" btn-outline-white btn btn-white text-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                     {% endif %}
                 {% endif %}
         {% endfor %}

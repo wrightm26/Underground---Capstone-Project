@@ -6,13 +6,23 @@ from app.forms import SignUpForm, LoginForm, AddArtForm, UploadForm
 from werkzeug.utils import secure_filename
 from app.models import User, Art
 from flask_login import login_user, logout_user, login_required, current_user
+import stripe
 
 
 @app.route('/')
 def index():
     files = os.listdir(f"{app.config['UPLOAD_PATH']}")
-    arts = Art.query.all()
-    return render_template('index.html', files=files, arts=arts)
+    arts = Art.query.order_by(Art.art_id.desc()).all()
+    user = User.query.all()
+    return render_template('index.html', files=files, arts=arts, user=user)
+
+@app.route('/thankyou')
+def thankyou():
+    return render_template('thankyou.html' )
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
@@ -61,12 +71,13 @@ def login():
 
 @app.route('/profile/<username>')
 def profile(username):
+
     profile = User.query.filter_by(username=username).first()
-    text_to_copy = 'http://127.0.0.1:5000/profile/{profile.username}'
+    print(profile.id)
     if profile is None:
         return redirect(url_for('signup'))
     else:
-        arts = Art.query.all()
+        arts = Art.query.order_by(Art.art_id.desc()).all()
         return render_template('profile.html', username=username, arts=arts, profile=profile)
 
 @app.route('/logout')
@@ -87,6 +98,8 @@ def upload_file(artwork_id):
             art = Art.query.get(artwork_id)
             art.image = filename
             db.session.commit()
+
+
         return redirect(url_for('index'))
     return render_template('upload.html', form=form)
 
@@ -105,9 +118,12 @@ def addart():
 
         new_art = Art(title=title, width=width, height=height, description=description, price=price, user_id=current_user.id)
         print("New artwork added")
+        print(new_art.price)
+        int_num = (new_art.price)
+        print({int_num})
 
         flash(f"{new_art.title} has been created!", "success")
-
+        stripe.Product.create(name=new_art.title, description=new_art.description, default_price_data=int_num, id=new_art.art_id)
         return redirect(url_for('upload_file', artwork_id=new_art.art_id))
     return render_template('addart.html', form=form)
 
@@ -132,6 +148,7 @@ def delete_art(art_id):
 def edit_art(art_id):
     form = AddArtForm()
     art_to_edit = Art.query.get_or_404(art_id)
+    art = Art.query.all()
     if art_to_edit.user_id != current_user.id:
         flash("You do not have permission to edit this post", "danger")
         return redirect(url_for('index'))
@@ -145,12 +162,12 @@ def edit_art(art_id):
 
         db.session.commit()
         flash(f"{art_to_edit.title} has been edited!", "success")
-        return redirect(url_for('upload'))
+        return redirect(url_for('upload_file', artwork_id=art_id))
 
     form.title.data = art_to_edit.title
     form.width.data = art_to_edit.width
     form.height.data = art_to_edit.height
-    form.description = art_to_edit.description.data
-    form.price.data = art_to_edit.price.data
+    form.description.data = art_to_edit.description
+    form.price.data = art_to_edit.price
 
     return render_template('edit.html', form=form, art=art_to_edit)
