@@ -91,3 +91,25 @@ class Art(db.Model):
             'user_id': self.user_id,
             'image': self.image,
         }
+
+
+class Contact(db.Model):
+    name = db.Column(db.String, primary_key=True)
+    number = db.Column(db.Integer, nullable=False)
+    question = db.Column(db.String, nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        db.session.add(self)
+        db.session.commit()
+
+    def __repr__(self):
+        return f"<Art {self.name}|{self.question}>"
+
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'number': self.number,
+            'question': self.question,
+        }

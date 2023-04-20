@@ -2,9 +2,9 @@
 import os
 from app import app, db
 from flask import render_template, redirect, url_for, flash, request
-from app.forms import SignUpForm, LoginForm, AddArtForm, UploadForm
+from app.forms import SignUpForm, LoginForm, AddArtForm, UploadForm, ContactForm
 from werkzeug.utils import secure_filename
-from app.models import User, Art
+from app.models import User, Art, Contact
 from flask_login import login_user, logout_user, login_required, current_user
 import stripe
 
@@ -20,9 +20,26 @@ def index():
 def thankyou():
     return render_template('thankyou.html' )
 
-@app.route('/about')
+@app.route('/about', methods=['GET', 'POST'])
 def about():
-    return render_template('about.html')
+    form = ContactForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        number = form.number.data
+        question = form.question.data
+        print(name, number, question)
+
+        check_comment = db.session.execute(db.select(Contact).filter((Contact.name == name) | (Contact.number == number))).scalars().all()
+        if check_comment:
+
+            flash("ou have already reached out to us. Please give us 24 hours to respond. Thank you for your patience!", "warning")
+            return redirect(url_for('signup'))
+
+        new_form = Contact(name=name, number=number, question=question)
+        flash(f"Thank you {new_form.name} for reaching out to us!", "success")
+        return redirect(url_for('about'))
+
+    return render_template('about.html', form=form)
 
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
@@ -119,7 +136,7 @@ def addart():
         new_art = Art(title=title, width=width, height=height, description=description, price=price, user_id=current_user.id)
         print("New artwork added")
         print(new_art.price)
-        int_num = (new_art.price)
+        int_num = int(new_art.price)
         print({int_num})
 
         flash(f"{new_art.title} has been created!", "success")
