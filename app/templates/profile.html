@@ -3,7 +3,21 @@
 {% block title %} Profile {% endblock %}
 
 {% block header %}
-    <h1 class="text-dark fw-lighter fs-1 mt-4"><strong>@</strong>{{ username }}</h1>
+    <h1 class="text-dark fw-lighter fs-1 mt-4"><strong>@</strong>{{ username }}</h1>>
+    <button class=" btn btn-dark text-white p-2 mt-4" onclick="copyContent()" >Share Portfolio</button>
+
+    <script>
+        async function copyContent() {
+            try {
+                await navigator.clipboard.writeText('http://127.0.0.1:5000/profile/{{ username }}');
+                console.log('Content copied to clipboard');
+                alert(("You have copied the link "))
+
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+            }
+            }
+    </script>
 
 {% endblock %}
 
@@ -23,13 +37,13 @@
                                     <span class="card-text"><em>{{ art.description }}</em></span><br>
                                     <span class="card-text">Size: <em>{{ art.width }} X {{ art.height }}</em></span><br>
                                     <span class="card-text">Price: <em>${{ art.price }}</em></span><br>
-                                        <button type="button" class="btn btn-outline-white text-danger text-center" data-bs-toggle="modal" data-bs-target="#deleteArtModal-{{ art.art_id }}">Delete</button>
-                                        <a href="{{ url_for('edit_art', art_id=art.art_id) }}" class="btn btn-border-secondary text-secondary text-center">Edit</a>
+                                        <button type="button" class="btn btn-outline-danger text-danger text-center p-1 me-3 mt-2" data-bs-toggle="modal" data-bs-target="#deleteArtModal-{{ art.art_id }}">Delete</button>
+                                        <a href="{{ url_for('edit_art', art_id=art.art_id) }}" class="btn btn-border-secondary text-secondary text-center btn-outline-secondary p-1 mt-2">Edit</a>
 
                                 </div>
                         </div>
                         <div class="row g-0">
-                                <img class="card-img-top rounded-3" style="width: 240px; max-height: 270px;" src="{{ url_for('static', filename='/uploads/{}'.format(art.image)) }}" alt="random">
+                                <img class="card-img-top rounded-3" style="width: 240px; max-height: 270px;" src="{{ url_for('static', filename='/uploads/{}'.format(art.image)) }}" type="button"  data-bs-toggle="modal" data-bs-target="#showArtModal-{{ art.art_id }}" alt="random">
                         </div>
                     </div>
 
@@ -82,7 +96,7 @@
                             </div>
                             <div>
                                 {% if art.user_id != current_user.id %}
-                                    <a href="/thankyou" class=" w-100 btn btn btn-success text-white p-1 fs-6 pe-3 ps-3 rounded-bottom"><strong>BUY NOW</strong></a>
+                                    <a href="{{ url_for('order', art_id=art.art_id) }}" class=" w-100 btn btn btn-success text-white p-1 fs-6 pe-3 ps-3 rounded-bottom"><strong>BUY NOW</strong></a>
 
                                 {% endif %}
                             </div>

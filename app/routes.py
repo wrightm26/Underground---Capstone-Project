@@ -2,7 +2,7 @@
 import os
 from app import app, db
 from flask import render_template, redirect, url_for, flash, request
-from app.forms import SignUpForm, LoginForm, AddArtForm, UploadForm, ContactForm
+from app.forms import SignUpForm, LoginForm, AddArtForm, UploadForm, ContactForm, ProfitForm
 from werkzeug.utils import secure_filename
 from app.models import User, Art, Contact
 from flask_login import login_user, logout_user, login_required, current_user
@@ -20,6 +20,20 @@ def index():
 def thankyou():
     return render_template('thankyou.html' )
 
+@app.route('/profit', methods=['GET', 'POST'])
+def profit():
+    form = ProfitForm()
+    if form.validate_on_submit():
+        hours = form.hours.data
+        hours_worth = form.hours_worth.data
+        supply = form.supply.data
+
+        your_profit = (hours * hours_worth) + supply
+        flash(f'You should charge no less than {your_profit} for your artwork!', 'info')
+        return redirect(url_for('addart'))
+
+    return render_template('profit.html', form=form )
+
 @app.route('/about', methods=['GET', 'POST'])
 def about():
     form = ContactForm()
@@ -32,11 +46,11 @@ def about():
         check_comment = db.session.execute(db.select(Contact).filter((Contact.name == name) | (Contact.number == number))).scalars().all()
         if check_comment:
 
-            flash("ou have already reached out to us. Please give us 24 hours to respond. Thank you for your patience!", "warning")
-            return redirect(url_for('signup'))
+            flash("You have already reached out to us. Please give us 24 hours to respond. Thank you for your patience!", "warning")
+            return redirect(url_for('about'))
 
         new_form = Contact(name=name, number=number, question=question)
-        flash(f"Thank you {new_form.name} for reaching out to us!", "success")
+        flash(f"Thank you {new_form.name.title()} for reaching out to us!", "success")
         return redirect(url_for('about'))
 
     return render_template('about.html', form=form)
@@ -64,7 +78,7 @@ def signup():
             return redirect(url_for('signup'))
 
         new_user = User(first_name=first_name, last_name=last_name, address=address, city=city, state=state, zipcode=zipcode, email=email, username=username, password=password)
-        flash(f"Thank you {new_user.username} for signing up!", "success")
+        flash(f"Thank you {new_user.username.title()} for signing up!", "success")
         return redirect(url_for('login'))
     return render_template('signup.html', form=form)
 
@@ -79,7 +93,7 @@ def login():
         user= User.query.filter_by(username=username).first()
         if user is not None and user.check_password(password):
             login_user(user)
-            flash(f'You have succesfully logged in as {username}!', "success")
+            flash(f'You have succesfully logged in as {username.title()}!', "success")
             return redirect(url_for('index'))
         else:
             flash(f'Invalid username or password', "danger")
@@ -100,7 +114,7 @@ def profile(username):
 @app.route('/logout')
 def logout():
     logout_user()
-    flash("You have been logged out")
+    flash("You have been logged out", 'success')
     return redirect(url_for('index'))
 
 @app.route('/upload/<artwork_id>', methods=["GET", "POST"])
@@ -116,7 +130,7 @@ def upload_file(artwork_id):
             art.image = filename
             db.session.commit()
 
-
+        flash(f"{art.title} has been created!", "success")
         return redirect(url_for('index'))
     return render_template('upload.html', form=form)
 
@@ -156,7 +170,7 @@ def delete_art(art_id):
 
     db.session.delete(art_to_delete)
     db.session.commit()
-    flash(f"{art_to_delete.title} has been deleted", "info")
+    flash(f"{art_to_delete.title.title()} has been deleted", "info")
     print("You have been deleted")
     return redirect(url_for('index'))
 
@@ -188,3 +202,12 @@ def edit_art(art_id):
     form.price.data = art_to_edit.price
 
     return render_template('edit.html', form=form, art=art_to_edit)
+
+@app.route('/order/<art_id>', methods=["GET", "POST"])
+def order(art_id):
+
+    art_order = Art.query.get_or_404(art_id)
+    art = Art.query.all()
+    
+    return redirect(url_for('thankyou'))
+    # return render_template('edit.html', art_order=art_order, art=art)

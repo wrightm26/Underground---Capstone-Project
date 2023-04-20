@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %} Profit{% endblock %}
+
+{% block header %}
+    <h1 class="text-dark fw-light fs-1">Profit Calculator</h1>
+{% endblock %}
+
+{% block content %}
+
+    <div class="row justify-content-center">
+        <div class="col-7">
+            <div class="card mb-5 border border-white ps-5 ">
+                <div class="card-body ms-5">
+                    <form action="" method="POST">
+                        {{ form.csrf_token }}
+                        <div class="row">
+                            {{ form.hours.label (class="ms-5 mt-2")}}
+                            {{ form.hours(class='form-control rounded-pill border border-secondary mt-2 ms-5', style='max-width: 350px; ') }}
+
+                            {{ form.hours_worth.label (class="ms-3 mt-2 ms-5")}}
+                            {{ form.hours_worth(class='form-control rounded-pill border border-secondary mt-2 ms-5', style='max-width: 350px;') }}
+
+                            {{ form.supply.label (class="ms-3 mt-2 ms-5")}}
+                            {{ form.supply(class='form-control rounded-pill border border-secondary mt-2 ms-5', style='max-width: 350px;'  ) }}
+                        </div>
+                        <div class="row justify-content-start">
+                            {{ form.submit(class="btn btn-dark mt-5 rounded-4 p-3 ms-5", style='max-width: 350px;') }}
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

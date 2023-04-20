@@ -39,3 +39,9 @@ class ContactForm(FlaskForm):
     number = StringField('Number:', validators=[InputRequired()])
     question = StringField('Question/Comment:', validators=[InputRequired()])
     submit = SubmitField('Send')
+
+class ProfitForm(FlaskForm):
+    hours = IntegerField('Hours Spent on your Project:', validators=[InputRequired()])
+    hours_worth = IntegerField('How much would you like to make per hour?', validators=[InputRequired()])
+    supply = IntegerField('How much did you spend on supplies for your project?', validators=[InputRequired()])
+    submit = SubmitField('Find Profit')
