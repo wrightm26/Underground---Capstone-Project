@@ -71,6 +71,7 @@ class Art(db.Model):
     price = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     image = db.Column(db.String)
+    stripe_product_id = db.Column(db.String)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -90,6 +91,7 @@ class Art(db.Model):
             'price': self.price,
             'user_id': self.user_id,
             'image': self.image,
+            'stripe_product_id': self.stripe_product_id,
         }
 
 

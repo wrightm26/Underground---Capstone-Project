@@ -13,8 +13,10 @@ app.config.from_object(Config)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 app.config['UPLOAD_PATH'] = './app/static/uploads'
 
-stripe.api_key='pk_test_51MwDx2Jk4MDHTRtHdqQMjaQSioYt10GJK7HaJ1bcFdLCHeWapu0MRrIRHOeRNzpIHMrn9UpTlTRdthuHqEtHu1qP00VNXa0Cvo'
-stripe.api_key='sk_test_51MwDx2Jk4MDHTRtHDqT5s7hFk0QcHsuTt2yU0VZ93FQVTaXJinikAVViNBtz7m8ijgAfbk35OekMQEQ3YRIq30kH00SrF3lfXA'
+app.config['STRIPE_PUBLIC_KEY']='pk_test_51MwDx2Jk4MDHTRtHdqQMjaQSioYt10GJK7HaJ1bcFdLCHeWapu0MRrIRHOeRNzpIHMrn9UpTlTRdthuHqEtHu1qP00VNXa0Cvo'
+app.config['STRIPE_SECRET_KEY']='sk_test_51MwDx2Jk4MDHTRtHDqT5s7hFk0QcHsuTt2yU0VZ93FQVTaXJinikAVViNBtz7m8ijgAfbk35OekMQEQ3YRIq30kH00SrF3lfXA'
+
+stripe.api_key = 'sk_test_51MwDx2Jk4MDHTRtHDqT5s7hFk0QcHsuTt2yU0VZ93FQVTaXJinikAVViNBtz7m8ijgAfbk35OekMQEQ3YRIq30kH00SrF3lfXA'
 
 db = SQLAlchemy(app)
 

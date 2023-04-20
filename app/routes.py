@@ -4,7 +4,7 @@ from app import app, db
 from flask import render_template, redirect, url_for, flash, request
 from app.forms import SignUpForm, LoginForm, AddArtForm, UploadForm, ContactForm, ProfitForm
 from werkzeug.utils import secure_filename
-from app.models import User, Art, Contact
+from app.models import User, Art , Contact
 from flask_login import login_user, logout_user, login_required, current_user
 import stripe
 
@@ -14,11 +14,16 @@ def index():
     files = os.listdir(f"{app.config['UPLOAD_PATH']}")
     arts = Art.query.order_by(Art.art_id.desc()).all()
     user = User.query.all()
-    return render_template('index.html', files=files, arts=arts, user=user)
+
+    return render_template('index.html', files=files, arts=arts, user=user )
 
 @app.route('/thankyou')
 def thankyou():
     return render_template('thankyou.html' )
+
+@app.route('/cancel')
+def cancel():
+    return render_template('errorpayment.html' )
 
 @app.route('/profit', methods=['GET', 'POST'])
 def profit():
@@ -153,8 +158,17 @@ def addart():
         int_num = int(new_art.price)
         print({int_num})
 
+        price_data = {
+            'currency': 'usd',
+            'unit_amount_decimal': str(int_num*100)
+        }
+
         flash(f"{new_art.title} has been created!", "success")
-        stripe.Product.create(name=new_art.title, description=new_art.description, default_price_data=int_num, id=new_art.art_id)
+        new_product = stripe.Product.create(name=new_art.title, description=new_art.description, default_price_data=price_data, id=new_art.art_id)
+
+        new_art.stripe_product_id = new_product.id
+        db.session.commit()
+
         return redirect(url_for('upload_file', artwork_id=new_art.art_id))
     return render_template('addart.html', form=form)
 
@@ -203,11 +217,25 @@ def edit_art(art_id):
 
     return render_template('edit.html', form=form, art=art_to_edit)
 
-@app.route('/order/<art_id>', methods=["GET", "POST"])
-def order(art_id):
+@app.route('/order/<product_id>', methods=["GET", "POST"])
+def order(product_id):
 
-    art_order = Art.query.get_or_404(art_id)
-    art = Art.query.all()
-    
-    return redirect(url_for('thankyou'))
+
+    pull_art = stripe.Product.retrieve(product_id)
+    price_id = pull_art.get("default_price")
+
+    session = stripe.checkout.Session.create(
+        line_items = [{
+            'price': price_id,
+            'quantity': 1,
+        }],
+        mode = 'payment',
+        success_url = 'http://localhost:5000' + url_for('thankyou'),
+        cancel_url = 'http://localhost:5000' + url_for('cancel')
+
+    )
+    # pull_price_id = stripe.Product.list(['data.default_price'])
+    # print(pull_price_id)
+    return redirect(session.url, code=303)
+    # return render_template('purchase.html', check_out_key={app.config['STRIPE_SECRET_KEY']})
     # return render_template('edit.html', art_order=art_order, art=art)
