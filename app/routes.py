@@ -15,7 +15,7 @@ def index():
     arts = Art.query.order_by(Art.art_id.desc()).all()
     user = User.query.all()
 
-    return render_template('index.html', files=files, arts=arts, user=user )
+    return render_template('index.html', files=files, arts=arts, user=user)
 
 @app.route('/thankyou')
 def thankyou():
@@ -193,7 +193,6 @@ def delete_art(art_id):
 def edit_art(art_id):
     form = AddArtForm()
     art_to_edit = Art.query.get_or_404(art_id)
-    art = Art.query.all()
     if art_to_edit.user_id != current_user.id:
         flash("You do not have permission to edit this post", "danger")
         return redirect(url_for('index'))
@@ -217,6 +216,43 @@ def edit_art(art_id):
 
     return render_template('edit.html', form=form, art=art_to_edit)
 
+@app.route('/editinfo/<user_id>', methods=["GET", "POST"])
+@login_required
+def edit_info(user_id):
+    form = SignUpForm()
+    user_to_edit = User.query.get_or_404(user_id)
+    if user_id == current_user.id:
+        flash("You do not have permission to edit this post", "danger")
+        return redirect(url_for('index'))
+
+    if form.validate_on_submit():
+        user_to_edit.first_name = form.first_name.data
+        user_to_edit.last_name = form.last_name.data
+        user_to_edit.address = form.address.data
+        user_to_edit.city = form.city.data
+        user_to_edit.state = form.state.data
+        user_to_edit.zipcode = form.zipcode.data
+        user_to_edit.email = form.email.data
+        user_to_edit.username = form.username.data
+        user_to_edit.password = form.password.data
+
+        db.session.commit()
+        flash(f"{user_to_edit.title} has been edited!", "success")
+        return redirect(url_for('profile'))
+
+    form.first_name.data = user_to_edit.first_name
+    form.last_name.data = user_to_edit.last_name
+    form.address.data = user_to_edit.address
+    form.city.data = user_to_edit.city
+    form.state.data = user_to_edit.state
+    form.zipcode.data = user_to_edit.zipcode
+    form.email.data = user_to_edit.email
+    form.username = user_to_edit.username
+    form.password = user_to_edit.password
+
+    return render_template('editinfo.html', form=form, user_info=user_to_edit)
+
+
 @app.route('/order/<product_id>', methods=["GET", "POST"])
 def order(product_id):
 
@@ -234,8 +270,5 @@ def order(product_id):
         cancel_url = 'http://localhost:5000' + url_for('cancel')
 
     )
-    # pull_price_id = stripe.Product.list(['data.default_price'])
-    # print(pull_price_id)
+
     return redirect(session.url, code=303)
-    # return render_template('purchase.html', check_out_key={app.config['STRIPE_SECRET_KEY']})
-    # return render_template('edit.html', art_order=art_order, art=art)
