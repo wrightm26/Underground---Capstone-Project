@@ -17,9 +17,9 @@ def index():
 
     return render_template('index.html', files=files, arts=arts, user=user)
 
-@app.route('/thankyou/<product_id>')
-def thankyou():
-    flash("Thank you for purchasing artwork!", "success")
+@app.route('/thankyou/<product_id>', methods=['GET', 'POST'])
+def thankyou(product_id):
+    product_id = Customer.artist_id
     form = CustomerForm()
     if form.validate_on_submit():
         first_name = form.first_name.data
@@ -31,9 +31,8 @@ def thankyou():
         zipcode = form.zipcode.data
         email = form.email.data
         number = form.number.data
-        
 
-        customer_info = Customer(first_name=first_name, last_name=last_name, address=address, city=city, state=state, country=country, zipcode=zipcode, email=email, number=number)
+        customer_info = Customer(first_name=first_name, last_name=last_name, address=address, city=city, state=state, country=country, zipcode=zipcode, email=email, number=number, artist_id=product_id)
         flash(f"Thank you {customer_info.first_name.title()}! Your order is complete!", "success")
         return redirect(url_for('index'))
 
@@ -116,7 +115,7 @@ def login():
         user= User.query.filter_by(username=username).first()
         if user is not None and user.check_password(password):
             login_user(user)
-            flash(f'You have succesfully logged in as {username.title()}!', "success")
+            flash(f'You have succesfully logged in as @{username.title()}!', "success")
             return redirect(url_for('index'))
         else:
             flash(f'Invalid username or password', "danger")
@@ -133,6 +132,18 @@ def profile(username):
     else:
         arts = Art.query.order_by(Art.art_id.desc()).all()
         return render_template('profile.html', username=username, arts=arts, profile=profile)
+
+@app.route('/notifications/<artist_id>/<username>', methods=['GET', 'POST'])
+@login_required
+def notifications(artist_id, username):
+    customer_purchase = Customer.query.filter_by(artist_id=artist_id)
+    print(customer_purchase.count())
+    if artist_id == current_user.id:
+        if customer_purchase.count() == 0:
+            flash("You don't have any notifications", "info")
+            return redirect(url_for('profile', username=username))
+        else:
+            return render_template('notifications.html', customer_purchase=customer_purchase)
 
 @app.route('/logout')
 def logout():
@@ -169,6 +180,12 @@ def addart():
         height = form.height.data
         description = form.description.data
         price = form.price.data
+
+        check_art = db.session.execute(db.select(Art).filter((Art.title == title) | (Art.description == description))).scalars().all()
+        if check_art:
+
+            flash("A user with that title/description already exists", "warning")
+            return redirect(url_for('addart'))
 
         new_art = Art(title=title, width=width, height=height, description=description, price=price, user_id=current_user.id)
         print("New artwork added")
@@ -255,8 +272,8 @@ def edit_info(user_id):
         user_to_edit.password = form.password.data
 
         db.session.commit()
-        flash(f"{user_to_edit.title} has been edited!", "success")
-        return redirect(url_for('profile'))
+        flash(f"@{user_to_edit.username.title()} has been edited!", "success")
+        return redirect(url_for('index'))
 
     form.first_name.data = user_to_edit.first_name
     form.last_name.data = user_to_edit.last_name
@@ -274,7 +291,6 @@ def edit_info(user_id):
 @app.route('/order/<product_id>', methods=["GET", "POST"])
 def order(product_id):
 
-    artwork = Art.query.get(art_id=product_id)
     pull_art = stripe.Product.retrieve(product_id)
     price_id = pull_art.get("default_price")
 
@@ -284,7 +300,7 @@ def order(product_id):
             'quantity': 1,
         }],
         mode = 'payment',
-        success_url = 'http://localhost:5000' + url_for('thankyou', product_id=artwork.art_id),
+        success_url = 'http://localhost:5000' + url_for('thankyou', product_id=product_id),
         cancel_url = 'http://localhost:5000' + url_for('cancel')
 
     )

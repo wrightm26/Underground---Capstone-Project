@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 
-{% block title %} Sign Up {% endblock %}
+{% block title %} Information {% endblock %}
 
 {% block header %}
-    <h1 class="text-dark fw-light fs-1">Sign Up</h1>
+    <h5 class="text-dark fw-light">Last Step!</h5>
+    <h1 class="text-dark fw-light fs-1">Your Information</h1>
 {% endblock %}
 
 {% block content %}
@@ -32,39 +33,37 @@
                                 {{ form.city.label (class="ms-3")}}
                                 {{ form.city(class="form-control rounded-pill border border-secondary mt-2") }}
                             </div>
-                            <div class="col-3 mt-2 mb-4">
+                            <div class="col-5 mt-2 mb-4">
                                 {{ form.state.label (class="ms-3")}}
                                 {{ form.state(class="form-control rounded-pill border border-secondary mt-2") }}
                             </div>
-                            <div class="col-2 mt-2 mb-4">
+                        </div>
+                        <div class="row">
+                            <div class="col-5 mt-2 mb-4 ms-5">
                                 {{ form.country.label (class="ms-3")}}
                                 {{ form.country(class="form-control rounded-pill border border-secondary mt-2") }}
                             </div>
-                            <div class="col-2 mt-2 mb-4">
+                            <div class="col-5 mt-2 mb-4">
                                 {{ form.zipcode.label (class="ms-3")}}
                                 {{ form.zipcode(class="form-control rounded-pill border border-secondary mt-2") }}
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-5 mb-2 ms-5">
+                            <div class="col-5 mt-2 mb-4 ms-5">
                                 {{ form.email.label (class="ms-3")}}
                                 {{ form.email(class="form-control rounded-pill border border-secondary mt-2") }}
                             </div>
-                            <div class="col-5 mb-2" >
-                                {{ form.username.label (class="ms-3")}}
-                                {{ form.username(class="form-control rounded-pill border border-secondary mt-2") }}
-                        </div>
-                        <div class="row">
-                            <div class="col-5 mt-2 mb-2 ms-5">
+
+                            <div class="col-5 mt-2 mb-2">
                                 {{ form.number.label (class="ms-3")}}
-                                {{ form.number(class="form-control rounded-pill border border-secondary mt-2" placeholder="000-000-0000") }}
+                                {{ form.number(class="form-control rounded-pill border border-secondary mt-2", placeholder="Format 0000000000") }}
                             </div>
 
                         </div>
                         <div class="row justify-content-center mt-5 mb-5">
                             {{ form.submit(class="btn btn-dark w-50 m-3 rounded-pill p-3") }}
-                           
+
                         </div>
                     </form>
                 </div>

@@ -72,6 +72,7 @@ class Art(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     image = db.Column(db.String)
     stripe_product_id = db.Column(db.String)
+    
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -127,7 +128,8 @@ class Customer(db.Model):
     zipcode = db.Column(db.Integer, nullable=False)
     email = db.Column(db.String(75), nullable=False)
     number = db.Column(db.Integer, nullable=False)
-    artist_id = db.Column(db.Integer, db.ForeignKey("art.art_id"))
+    art_id = db.Column(db.Integer, nullable=False)
+    artist_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __init__(self, **kwargs):
@@ -150,5 +152,7 @@ class Customer(db.Model):
             'zipcode': self.zipcode,
             'email': self.email,
             'number': self.number,
+            'art_id': self.art_id,
+            'artist_id': self.artist_id,
             'date_created': self.date_created,
         }

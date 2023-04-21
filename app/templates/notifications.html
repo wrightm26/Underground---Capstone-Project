@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block header %}
+    <h1 class="text-dark fw-lighter fs-1 mt-4">Your Notifications</h1>
+{% endblock %}
+
+
+{% block content %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Address</th>
+            <th scope="col">City</th>
+            <th scope="col">State</th>
+            <th scope="col">Country</th>
+            <th scope="col">Zipcode</th>
+            <th scope="col">Email</th>
+            <th scope="col">Number</th>
+        </tr>
+        </thead>
+    {% for notification in customer_purchase %}
+        <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>{{ notification.first_name }} {{ notification.last_name }}</td>
+                <td>{{ notification.address }}</td>
+                <td>{{ notification.city }}</td>
+                <td>{{ notification.state }}</td>
+                <td>{{ notification.country }}</td>
+                <td>{{ notification.zipcode }}</td>
+                <td>{{ notification.email }}</td>
+                <td>{{ notification.number }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% endfor %}
+{% endblock %}
