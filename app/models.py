@@ -115,3 +115,40 @@ class Contact(db.Model):
             'number': self.number,
             'question': self.question,
         }
+
+class Customer(db.Model):
+    customer_id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    address = db.Column(db.String(100), nullable=False)
+    city = db.Column(db.String(50), nullable=False)
+    state = db.Column(db.String(50), nullable=False)
+    country = db.Column(db.String(50), nullable=False)
+    zipcode = db.Column(db.Integer, nullable=False)
+    email = db.Column(db.String(75), nullable=False)
+    number = db.Column(db.Integer, nullable=False)
+    artist_id = db.Column(db.Integer, db.ForeignKey("art.art_id"))
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        db.session.add(self)
+        db.session.commit()
+
+    def __repr__(self):
+        return f"<Customer {self.customer_id}|{self.username}>"
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'address': self.address,
+            'city': self.city,
+            'state': self.state,
+            'country': self.country,
+            'zipcode': self.zipcode,
+            'email': self.email,
+            'number': self.number,
+            'date_created': self.date_created,
+        }

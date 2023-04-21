@@ -2,9 +2,9 @@
 import os
 from app import app, db
 from flask import render_template, redirect, url_for, flash, request
-from app.forms import SignUpForm, LoginForm, AddArtForm, UploadForm, ContactForm, ProfitForm
+from app.forms import SignUpForm, LoginForm, AddArtForm, UploadForm, ContactForm, ProfitForm, CustomerForm
 from werkzeug.utils import secure_filename
-from app.models import User, Art , Contact
+from app.models import User, Art , Contact, Customer
 from flask_login import login_user, logout_user, login_required, current_user
 import stripe
 
@@ -17,9 +17,27 @@ def index():
 
     return render_template('index.html', files=files, arts=arts, user=user)
 
-@app.route('/thankyou')
+@app.route('/thankyou/<product_id>')
 def thankyou():
-    return render_template('thankyou.html' )
+    flash("Thank you for purchasing artwork!", "success")
+    form = CustomerForm()
+    if form.validate_on_submit():
+        first_name = form.first_name.data
+        last_name = form.last_name.data
+        address = form.address.data
+        city = form.city.data
+        state = form.state.data
+        country = form.country.data
+        zipcode = form.zipcode.data
+        email = form.email.data
+        number = form.number.data
+        
+
+        customer_info = Customer(first_name=first_name, last_name=last_name, address=address, city=city, state=state, country=country, zipcode=zipcode, email=email, number=number)
+        flash(f"Thank you {customer_info.first_name.title()}! Your order is complete!", "success")
+        return redirect(url_for('index'))
+
+    return render_template('thankyou.html', form=form )
 
 @app.route('/cancel')
 def cancel():
@@ -247,8 +265,8 @@ def edit_info(user_id):
     form.state.data = user_to_edit.state
     form.zipcode.data = user_to_edit.zipcode
     form.email.data = user_to_edit.email
-    form.username = user_to_edit.username
-    form.password = user_to_edit.password
+    form.username.data = user_to_edit.username
+    form.password.data = user_to_edit.password
 
     return render_template('editinfo.html', form=form, user_info=user_to_edit)
 
@@ -256,7 +274,7 @@ def edit_info(user_id):
 @app.route('/order/<product_id>', methods=["GET", "POST"])
 def order(product_id):
 
-
+    artwork = Art.query.get(art_id=product_id)
     pull_art = stripe.Product.retrieve(product_id)
     price_id = pull_art.get("default_price")
 
@@ -266,7 +284,7 @@ def order(product_id):
             'quantity': 1,
         }],
         mode = 'payment',
-        success_url = 'http://localhost:5000' + url_for('thankyou'),
+        success_url = 'http://localhost:5000' + url_for('thankyou', product_id=artwork.art_id),
         cancel_url = 'http://localhost:5000' + url_for('cancel')
 
     )

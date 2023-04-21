@@ -15,7 +15,7 @@ class SignUpForm(FlaskForm):
     username = StringField('Username:', validators=[InputRequired()])
     password = PasswordField('Password:', validators=[InputRequired()])
     confirm_pass = PasswordField('Confirm Password:', validators=[InputRequired(), EqualTo('password')])
-    submit = SubmitField('Sign Up')
+    submit = SubmitField('Add Information')
 
 class LoginForm(FlaskForm):
     username = StringField('Username:', validators=[InputRequired()])
@@ -45,3 +45,15 @@ class ProfitForm(FlaskForm):
     hours_worth = IntegerField('How much would you like to make per hour?', validators=[InputRequired()])
     supply = IntegerField('How much did you spend on supplies for your project?', validators=[InputRequired()])
     submit = SubmitField('Find Profit')
+
+class CustomerForm(FlaskForm):
+    first_name = StringField('First Name:', validators=[InputRequired()])
+    last_name = StringField('Last Name:', validators=[InputRequired()])
+    address = StringField('Address:', validators=[InputRequired()])
+    city = StringField('City:', validators=[InputRequired()])
+    state = StringField('State:', validators=[InputRequired()])
+    country = StringField('Country:', validators=[InputRequired()])
+    zipcode = IntegerField('Zip Code:', validators=[InputRequired()])
+    email = EmailField('Email:', validators=[InputRequired()])
+    number = IntegerField('Number:', validators=[InputRequired()])
+    submit = SubmitField('Send')

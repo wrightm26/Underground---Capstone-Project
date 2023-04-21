@@ -8,9 +8,9 @@
 {% endblock %}
 
 {% block content %}
-    <div class="d-flex flex-wrap ">
+    <div class="d-flex flex-wrap ms-5">
         {% for art in arts %}
-                    <div class="m-3 card mb-3 border border-white mt-4 " style="max-width: 240px;">
+                    <div class="m-3 card mb-3 border border-white " style="max-width: 200px;">
                         <div class="row ">
                             <div class="card-body ">
                                 <a href="/profile/{{ art.artist.username }}" class=" p-0 card-text  fs-5 fw-light test-dark btn btn-white btn-outline-white ">@{{ art.artist.username }}</a>
@@ -23,7 +23,7 @@
                             </div>
                         </div>
                         <div class="row g-0">
-                                <img class="card-img-top rounded-3" style="width: 350px; max-height: 190px;" src="{{ url_for('static', filename='/uploads/{}'.format(art.image)) }}" type="button"  data-bs-toggle="modal" data-bs-target="#showArtModal-{{ art.art_id }}"  alt="random">
+                                <img class="card-img-top rounded-3" style="width: 350px; max-height: 150px;" src="{{ url_for('static', filename='/uploads/{}'.format(art.image)) }}" type="button"  data-bs-toggle="modal" data-bs-target="#showArtModal-{{ art.art_id }}"  alt="random">
                         </div>
                         <div>
                             {% if art.user_id != current_user.id %}
