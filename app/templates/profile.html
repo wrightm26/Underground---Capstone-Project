@@ -6,13 +6,6 @@
     <h1 class="text-dark fw-lighter fs-1 mt-4"><strong>@</strong>{{ username }}</h1>>
     <button class=" btn btn-dark text-white p-2 mt-4" onclick="copyContent()" >Share Portfolio</button>
 
-        {% if arts.user_id == current_user.id %}
-            <button type="button" class="btn btn-success">Messages</button>
-        {% endif %}
-
-
-
-
     <script>
         async function copyContent() {
             try {
