@@ -9,7 +9,7 @@
             <a class="nav-link text-dark fw-light me-5 ms-4" href="/">Home</a>
             {% if current_user.is_authenticated %}
                 <a class="nav-link text-dark fw-light me-3 ms-2" href="/profile/{{ current_user.username }}">Portfolio</a>
-                <a class="nav-link text-dark fw-light me-3 ms-2" href="/notifications/{{ current_user.id }}/{{ current_user.username }}">Messages</a>
+                <a class="nav-link text-dark fw-light me-3 ms-2" href="/notifications/{{ current_user.id }}">Messages</a>
                 <a class="nav-link text-dark fw-light me-3 ms-2" href="/profit">Profit Calculator</a>
                 <a class="nav-link text-dark fw-light me-3 ms-2" href="/addart">Add Artwork</a>
                 <a class="nav-link text-dark fw-light me-3 ms-2" href="/editinfo/{{ current_user.id }}">Edit Information</a>

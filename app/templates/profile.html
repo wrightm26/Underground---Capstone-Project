@@ -104,7 +104,7 @@
                             </div>
                             <div>
                                 {% if art.user_id != current_user.id %}
-                                    <a href="{{ url_for('order', product_id=art.art_id) }}" class=" w-100 btn btn btn-success text-white p-1 fs-6 pe-3 ps-3 rounded-bottom"><strong>BUY NOW</strong></a>
+                                    <a href="{{ url_for('order', product_id=art.art_id, user_id=art.user_id) }}" class=" w-100 btn btn btn-success text-white p-1 fs-6 pe-3 ps-3 rounded-bottom"><strong>BUY NOW</strong></a>
 
                                 {% endif %}
                             </div>

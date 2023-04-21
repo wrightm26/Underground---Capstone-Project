@@ -18,6 +18,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(255), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     artwork = db.relationship('Art', backref='artist')
+    customer_info = db.relationship('Customer', backref='customer_info')
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -72,7 +73,7 @@ class Art(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     image = db.Column(db.String)
     stripe_product_id = db.Column(db.String)
-    
+
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

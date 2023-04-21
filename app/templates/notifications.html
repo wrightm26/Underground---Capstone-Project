@@ -3,7 +3,7 @@
 {% block title %}Notifications{% endblock %}
 
 {% block header %}
-    <h1 class="text-dark fw-lighter fs-1 mt-4">Your Notifications</h1>
+    <h1 class="text-dark fw-lighter fs-1 mt-4">Artwork Sold:</h1>
 {% endblock %}
 
 
@@ -11,6 +11,7 @@
     <table class="table">
         <thead>
         <tr>
+            <th scope="col">Order #</th>
             <th scope="col">Name</th>
             <th scope="col">Address</th>
             <th scope="col">City</th>
@@ -19,6 +20,8 @@
             <th scope="col">Zipcode</th>
             <th scope="col">Email</th>
             <th scope="col">Number</th>
+            <th scope="col">Artwork</th>
+
         </tr>
         </thead>
     {% for notification in customer_purchase %}
@@ -33,6 +36,8 @@
                 <td>{{ notification.zipcode }}</td>
                 <td>{{ notification.email }}</td>
                 <td>{{ notification.number }}</td>
+                <td>{{ art.title }}</td>
+
             </tr>
         </tbody>
     </table>
