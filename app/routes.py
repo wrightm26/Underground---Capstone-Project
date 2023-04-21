@@ -140,10 +140,13 @@ def profile(username):
 @app.route('/notifications/<art_id>', methods=['GET', 'POST'])
 @login_required
 def notifications(art_id):
+
     customer_purchase = Customer.query.filter_by(art_id=art_id)
-    return render_template('notifications.html', customer_purchase=customer_purchase)
-    # flash("You don't have any notifications available", "info")
-    # return redirect(url_for('profile', username=current_user.username))
+    if customer_purchase.count() != 0:
+        return render_template('notifications.html', customer_purchase=customer_purchase)
+   
+    flash("You don't have any notifications available", "info")
+    return redirect(url_for('profile', username=current_user.username))
 
 @app.route('/logout')
 def logout():

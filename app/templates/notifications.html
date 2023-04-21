@@ -11,7 +11,6 @@
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">Order #</th>
             <th scope="col">Name</th>
             <th scope="col">Address</th>
             <th scope="col">City</th>
@@ -20,26 +19,27 @@
             <th scope="col">Zipcode</th>
             <th scope="col">Email</th>
             <th scope="col">Number</th>
-            <th scope="col">Artwork</th>
+
 
         </tr>
         </thead>
-    {% for notification in customer_purchase %}
-        <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>{{ notification.first_name }} {{ notification.last_name }}</td>
-                <td>{{ notification.address }}</td>
-                <td>{{ notification.city }}</td>
-                <td>{{ notification.state }}</td>
-                <td>{{ notification.country }}</td>
-                <td>{{ notification.zipcode }}</td>
-                <td>{{ notification.email }}</td>
-                <td>{{ notification.number }}</td>
-                <td>{{ art.title }}</td>
+        {% for notification in customer_purchase %}
+            <tbody>
+                <tr>
+                    <td>{{ notification.first_name }} {{ notification.last_name }}</td>
+                    <td>{{ notification.address }}</td>
+                    <td>{{ notification.city }}</td>
+                    <td>{{ notification.state }}</td>
+                    <td>{{ notification.country }}</td>
+                    <td>{{ notification.zipcode }}</td>
+                    <td>{{ notification.email }}</td>
+                    <td>{{ notification.number }}</td>
+                    
 
-            </tr>
-        </tbody>
+
+                </tr>
+            </tbody>
+        {% endfor %}
     </table>
-    {% endfor %}
+
 {% endblock %}
